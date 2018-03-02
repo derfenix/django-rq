@@ -4,6 +4,7 @@ import importlib
 import logging
 import sys
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import connections
 from django.utils.version import get_version
@@ -76,7 +77,7 @@ class Command(BaseCommand):
         if pid:
             with open(os.path.expanduser(pid), "w") as fp:
                 fp.write(str(os.getpid()))
-        sentry_dsn = options.get('sentry-dsn')
+        sentry_dsn = options.get('sentry-dsn') or getattr(settings, 'SENTRY_DSN', None)
         try:
             # Instantiate a worker
             worker_class = import_attribute(options['worker_class'])
